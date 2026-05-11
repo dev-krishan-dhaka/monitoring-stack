@@ -24,28 +24,29 @@ A reusable observability stack for monitoring any Dockerized application.
 +--------------------------------------------------+
 |              YOUR CONTAINERS                     |
 |        (Backend, Frontend, Database)             |
-+----------+-------------+------------+-----------+
-           |             |            |
-           v             v            v
-+----------+  +----------+  +--------+  +---------+
-| CADVISOR |  | PROMTAIL |  |BLACKBOX|  | /metrics|
-| Metrics  |  |   Logs   |  | Uptime |  | endpoint|
-+----+-----+  +----+-----+  +---+----+  +----+----+
-     |              |           |            |
-     v              v           |            v
-+----+-----+  +----+-----+      |       +----+----+
-|PROMETHEUS|  |   LOKI   |      |       |PROMETHEUS|
-| Storage  |  | Storage  |      |       | Storage  |
-+----+-----+  +----+-----+      |       +----+----+
-     |              |           |            |
-     +--------------+-----------+------------+
-                          |
-                          v
-                 +------------------+
-                 |     GRAFANA      |
-                 | Dashboards & UI  |
-                 +------------------+
++----------+----------+----------+----------------+
+           |          |          |          |
+           v          v          v          v
++----------+ +--------+ +--------+ +---------+
+| CADVISOR | |PROMTAIL| |BLACKBOX| | /metrics|
+| Metrics  | |  Logs  | | Uptime | | endpoint|
++----+-----+ +---+----+ +---+----+ +----+----+
+     |            |          |           |
+     v            v          |           v
++----------+ +--------+      |      +----------+
+|PROMETHEUS| |  LOKI  |      |      |PROMETHEUS|
+| Storage  | |Storage |      |      | Storage  |
++----+-----+ +---+----+      |      +----+-----+
+     |            |          |           |
+     +------------+----------+-----------+
+                        |
+                        v
+               +------------------+
+               |     GRAFANA      |
+               | Dashboards & UI  |
+               +------------------+
 ```
+
 
 
 
