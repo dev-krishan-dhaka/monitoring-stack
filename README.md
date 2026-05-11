@@ -21,13 +21,32 @@ A reusable observability stack for monitoring any Dockerized application.
 ## Architecture
 
 ```
-Docker Containers
-       ↓
-Promtail → Loki → Grafana
-       ↓
-cAdvisor → Prometheus → Grafana
-       ↓
-Blackbox Exporter → Prometheus → Grafana
+```
+┌──────────────────────────────────────────────────┐
+│             YOUR CONTAINERS                      │
+│         (Backend, Frontend, Database)            │
+└──────┬──────────────┬──────────────┬─────────────┘
+       │              │              │
+       ▼              ▼              ▼
+┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐
+│  CADVISOR  │ │  PROMTAIL  │ │  BLACKBOX  │ │  /metrics  │
+│ (Metrics)  │ │   (Logs)   │ │  (Uptime)  │ │  endpoint  │
+└─────┬──────┘ └─────┬──────┘ └─────┬──────┘ └─────┬──────┘
+      │              │              │               │
+      ▼              ▼              │               ▼
+┌────────────┐ ┌────────────┐       │        ┌────────────┐
+│ PROMETHEUS │ │    LOKI    │       │        │ PROMETHEUS │
+│ (Storage)  │ │ (Storage)  │       │        │ (Storage)  │
+└─────┬──────┘ └─────┬──────┘       │        └─────┬──────┘
+      │              │              │               │
+      └──────────────┼──────────────┼───────────────┘
+                     │              │
+                     ▼              ▼
+              ┌──────────────────────────┐
+              │          GRAFANA         │
+              │    (Beautiful Dashboards)│
+              └──────────────────────────┘
+```
 ```
 
 ---
