@@ -167,8 +167,16 @@ networks:
   monitoring:
     external: true
 ```
+### step 3 - Create network 
 
-### Step 3 — Start Your Application
+Add this at the end of compose file: 
+```bash
+networks:
+  monitoring:
+    name: monitoring
+```
+
+### Step 4 — Start Your Application
 
 If using a build:
 
@@ -182,7 +190,7 @@ If using a pre-built image:
 docker compose up -d
 ```
 
-### Step 4 — Configure Blackbox Monitoring
+### Step 5 — Configure Blackbox Monitoring
 
 In `blackbox-targets.yml` --
 
@@ -196,7 +204,7 @@ In `blackbox-targets.yml` --
 > ✅ `http://frontend:3000`
 > ❌ `http://localhost:3000`
 
-### Step 5 — Restart Prometheus
+### Step 6 — Restart Prometheus
 
 ```bash
 docker compose restart prometheus
@@ -204,15 +212,10 @@ docker compose restart prometheus
 
 # Example - 
 
-## Step 1 — Create Shared Network
 
-```bash
-docker network create monitoring
-```
 
----
 
-## Step 2 — Clone and Configure the Application
+## Step 1 — Clone and Configure the Application
 
 ### Clone the repository
 
@@ -254,10 +257,8 @@ networks:
 
 ```yaml
 networks:
-  react-express:
-  express-mongo:
   monitoring:
-    external: true
+    name: monitoring
 ```
 
 ### Start the application
