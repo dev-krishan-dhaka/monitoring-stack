@@ -64,7 +64,7 @@ monitoring-stack/
 ### Step 1 — Clone Repository
 
 ```bash
-git clone <YOUR_GITHUB_REPO>
+git clone https://github.com/dev-krishan-dhaka/monitoring-stack
 cd monitoring-stack
 ```
 
