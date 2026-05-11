@@ -167,10 +167,9 @@ docker compose up -d
 
 ### Step 4 — Configure Blackbox Monitoring
 
-In `prometheus.yml`, find the `blackbox` job and add your endpoints:
+In `blackbox-targets.yml` --
 
 ```yaml
-static_configs:
   - targets:
       - 'http://frontend:3000'
       - 'http://backend:5000/health'
@@ -185,6 +184,104 @@ static_configs:
 ```bash
 docker compose restart prometheus
 ```
+
+# Example - 
+
+## Step 1 — Create Shared Network
+
+```bash
+docker network create monitoring
+```
+
+---
+
+## Step 2 — Clone and Configure the Application
+
+### Clone the repository
+
+```bash
+git clone https://github.com/docker/awesome-compose
+cd awesome-compose/react-express-mongodb
+```
+
+### Update `compose.yaml`
+
+Edit the `compose.yaml` file to add all services to the `monitoring` network.
+
+**Frontend service:**
+
+```yaml
+networks:
+  - react-express
+  - monitoring
+```
+
+**Backend service:**
+
+```yaml
+networks:
+  - express-mongo
+  - react-express
+  - monitoring
+```
+
+**Database service:**
+
+```yaml
+networks:
+  - express-mongo
+  - monitoring
+```
+
+**At the bottom of `compose.yaml`, update the networks section:**
+
+```yaml
+networks:
+  react-express:
+  express-mongo:
+  monitoring:
+    external: true
+```
+
+### Start the application
+
+```bash
+docker compose up --build -d
+```
+
+---
+
+## Step 3 — Clone and Configure the Monitoring Stack
+
+### Clone the monitoring stack
+
+```bash
+git clone https://github.com/dev-krishan-dhaka/monitoring-stack
+cd monitoring-stack
+```
+
+### Update `blackbox-target.yml`
+
+```yaml
+- targets:
+    - 'http://frontend:3000'
+    - 'http://backend:5000/health'
+```
+
+### Start the monitoring stack
+
+```bash
+docker compose up -d
+```
+
+---
+
+## Step 4 — Set Up Grafana Dashboard
+
+1. Open Grafana in your browser (default: `http://localhost:3001`)
+2. Navigate to **Dashboards → Import**
+3. Upload or paste the contents of `Grafana-dashboard-sample.json`
+4. Click **Import** to load the dashboard
 
 ---
 
