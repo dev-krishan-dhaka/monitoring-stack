@@ -1,9 +1,5 @@
 version: '3.8'
 
-networks:
-  monitoring:
-    external: true
-
 services:
   prometheus:
     image: prom/prometheus:latest
@@ -18,8 +14,6 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention.time=30d'
     restart: unless-stopped
-    networks:
-      - monitoring
 
   grafana:
     image: grafana/grafana:latest
@@ -33,8 +27,6 @@ services:
     restart: unless-stopped
     depends_on:
       - prometheus
-    networks:
-      - monitoring
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
@@ -48,8 +40,7 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
-    networks:
-      - monitoring
+   
 
   node-exporter:
     image: prom/node-exporter:latest
@@ -64,16 +55,15 @@ services:
       - '--path.sysfs=/host/sys'
       - '--path.rootfs=/rootfs'
     restart: unless-stopped
-    networks:
-      - monitoring
 
   blackbox-exporter:
     image: prom/blackbox-exporter:latest
     ports:
       - "9115:9115"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
-    networks:
-      - monitoring
+    
 
   loki:
     image: grafana/loki:latest
@@ -81,8 +71,7 @@ services:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
     restart: unless-stopped
-    networks:
-      - monitoring
+    
 
   promtail:
     image: grafana/promtail:latest
@@ -94,12 +83,7 @@ services:
     depends_on:
       - loki
     restart: unless-stopped
-    networks:
-      - monitoring
-
+    
 volumes:
   prometheus_data:
   grafana_data:
-networks:
-  monitoring:
-    name: monitoring  
