@@ -42,7 +42,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "probe_success{instance=\"http://frontend:3000\"}",
+                      "expr": "probe_success{instance=\"http://host.docker.internal:3000\"}",
                       "legendFormat": "__auto",
                       "range": true
                     },
@@ -118,6 +118,134 @@
         }
       }
     },
+    "panel-10": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "fflpm2pifc2rka"
+                    },
+                    "group": "loki",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "direction": "backward",
+                      "editorMode": "code",
+                      "expr": "{container=~\".*backend.*\"}",
+                      "queryType": "range"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 10,
+        "links": [],
+        "title": "Backend Logs",
+        "vizConfig": {
+          "group": "logs",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {},
+              "overrides": []
+            },
+            "options": {
+              "dedupStrategy": "none",
+              "enableInfiniteScrolling": false,
+              "enableLogDetails": true,
+              "prettifyLogMessage": true,
+              "showControls": false,
+              "showFieldSelector": false,
+              "showLevel": true,
+              "showTime": false,
+              "sortOrder": "Descending",
+              "timestampResolution": "ms",
+              "unwrappedColumns": false,
+              "wrapLogMessage": false
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-11": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "fflpm2pifc2rka"
+                    },
+                    "group": "loki",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "direction": "backward",
+                      "editorMode": "code",
+                      "expr": "{container=~\".*frontend.*\"}",
+                      "queryType": "range"
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 11,
+        "links": [],
+        "title": "Frontend logs",
+        "vizConfig": {
+          "group": "logs",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {},
+              "overrides": []
+            },
+            "options": {
+              "dedupStrategy": "none",
+              "enableInfiniteScrolling": false,
+              "enableLogDetails": true,
+              "prettifyLogMessage": true,
+              "showControls": false,
+              "showFieldSelector": false,
+              "showLevel": true,
+              "showTime": false,
+              "sortOrder": "Descending",
+              "timestampResolution": "ms",
+              "unwrappedColumns": false,
+              "wrapLogMessage": false
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
     "panel-2": {
       "kind": "Panel",
       "spec": {
@@ -137,7 +265,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(container_cpu_usage_seconds_total{\n  name=~\".*frontend.*\"\n}[1m]) * 100",
+                      "expr": "rate(container_cpu_usage_seconds_total{\n  container_label_com_docker_compose_service=\"frontend\"\n}[1m]) * 100",
                       "legendFormat": "__auto",
                       "range": true
                     },
@@ -255,7 +383,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "container_memory_working_set_bytes{\n  name=~\".*frontend.*\"\n} / 1024 / 1024",
+                      "expr": "container_memory_working_set_bytes{\n  container_label_com_docker_compose_service=\"frontend\"\n} / 1024 / 1024",
                       "legendFormat": "__auto",
                       "range": true
                     },
@@ -373,7 +501,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "probe_success{instance=\"http://backend:3000\"}",
+                      "expr": "probe_success{instance=\"http://host.docker.internal:5000\"}",
                       "legendFormat": "__auto",
                       "range": true
                     },
@@ -424,7 +552,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(container_cpu_usage_seconds_total{\n  name=~\".*backend.*\"\n}[1m]) * 100",
+                      "expr": "rate(container_cpu_usage_seconds_total{\n  container_label_com_docker_compose_service=\"backend\"\n}[1m]) * 100",
                       "legendFormat": "__auto",
                       "range": true
                     },
@@ -542,7 +670,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "container_memory_working_set_bytes{\n  name=~\".*backend.*\"\n} / 1024 / 1024",
+                      "expr": "container_memory_working_set_bytes{\n  container_label_com_docker_compose_service=\"backend\"\n} / 1024 / 1024",
                       "legendFormat": "__auto",
                       "range": true
                     },
@@ -660,7 +788,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(container_cpu_usage_seconds_total{\n  name=~\".*mongo.*\"\n}[1m]) * 100",
+                      "expr": "rate(container_cpu_usage_seconds_total{\n  container_label_com_docker_compose_service=\"mongo\"\n}[1m]) * 100",
                       "legendFormat": "__auto",
                       "range": true
                     },
@@ -778,7 +906,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "container_memory_working_set_bytes{\n  name=~\".*mongo.*\"\n} / 1024 / 1024",
+                      "expr": "container_memory_working_set_bytes{\n  container_label_com_docker_compose_service=\"mongo\"\n} / 1024 / 1024",
                       "legendFormat": "__auto",
                       "range": true
                     },
@@ -1121,9 +1249,35 @@
                         "kind": "ElementReference",
                         "name": "panel-9"
                       },
-                      "height": 9,
-                      "width": 20,
+                      "height": 10,
+                      "width": 8,
                       "x": 0,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-10"
+                      },
+                      "height": 10,
+                      "width": 8,
+                      "x": 8,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-11"
+                      },
+                      "height": 10,
+                      "width": 8,
+                      "x": 16,
                       "y": 0
                     }
                   }
@@ -1163,7 +1317,7 @@
       "1d"
     ],
     "fiscalYearStartMonth": 0,
-    "from": "now-15m",
+    "from": "now-1h",
     "hideTimepicker": false,
     "timezone": "browser",
     "to": "now"
