@@ -8,6 +8,7 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
+
   - job_name: docker
 
     docker_sd_configs:
@@ -15,22 +16,16 @@ scrape_configs:
         refresh_interval: 5s
 
     relabel_configs:
+
       - source_labels: ['__meta_docker_container_name']
         regex: '/(.*)'
         target_label: 'container'
 
-      - source_labels: ['__meta_docker_container_label_com_docker_compose_service']
-        target_label: 'service'
-
       - source_labels: ['__meta_docker_container_log_stream']
-        target_label: 'logstream'
+        target_label: 'stream'
+
+      - source_labels: ['__meta_docker_container_image']
+        target_label: 'image'
 
     pipeline_stages:
       - docker: {}
-
-    static_configs:
-      - targets:
-          - localhost
-        labels:
-          job: docker
-          __path__: /var/lib/docker/containers/*/*-json.log
