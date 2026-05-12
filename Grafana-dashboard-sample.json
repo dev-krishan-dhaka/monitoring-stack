@@ -21,6 +21,7 @@
     }
   ],
   "cursorSync": "Off",
+  "description": "hbb",
   "editable": true,
   "elements": {
     "panel-1": {
@@ -42,7 +43,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "probe_success{instance=\"http://host.docker.internal:3000\"}",
+                      "expr": "rate(container_cpu_usage_seconds_total{\n  container_label_com_docker_compose_service=\"$service\"\n}[1m]) * 100",
                       "legendFormat": "__auto",
                       "range": true
                     },
@@ -59,15 +60,49 @@
         "description": "",
         "id": 1,
         "links": [],
-        "title": "Status ",
+        "title": "CPU %",
         "vizConfig": {
-          "group": "gauge",
+          "group": "timeseries",
           "kind": "VizConfig",
           "spec": {
             "fieldConfig": {
               "defaults": {
                 "color": {
                   "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
                 },
                 "thresholds": {
                   "mode": "absolute",
@@ -86,160 +121,21 @@
               "overrides": []
             },
             "options": {
-              "barShape": "flat",
-              "barWidthFactor": 0.3,
-              "effects": {
-                "barGlow": false,
-                "centerGlow": false,
-                "gradient": true
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
               },
-              "endpointMarker": "point",
-              "minVizHeight": 75,
-              "minVizWidth": 75,
-              "orientation": "auto",
-              "reduceOptions": {
-                "calcs": [
-                  "lastNotNull"
-                ],
-                "fields": "",
-                "values": false
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
               },
-              "segmentCount": 1,
-              "segmentSpacing": 0.3,
-              "shape": "gauge",
-              "showThresholdLabels": false,
-              "showThresholdMarkers": false,
-              "sizing": "auto",
-              "sparkline": true,
-              "textMode": "auto"
-            }
-          },
-          "version": "13.0.1"
-        }
-      }
-    },
-    "panel-10": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "fflpm2pifc2rka"
-                    },
-                    "group": "loki",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "direction": "backward",
-                      "editorMode": "code",
-                      "expr": "{container=~\".*backend.*\"}",
-                      "queryType": "range"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
               }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 10,
-        "links": [],
-        "title": "Backend Logs",
-        "vizConfig": {
-          "group": "logs",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {},
-              "overrides": []
-            },
-            "options": {
-              "dedupStrategy": "none",
-              "enableInfiniteScrolling": false,
-              "enableLogDetails": true,
-              "prettifyLogMessage": true,
-              "showControls": false,
-              "showFieldSelector": false,
-              "showLevel": true,
-              "showTime": false,
-              "sortOrder": "Descending",
-              "timestampResolution": "ms",
-              "unwrappedColumns": false,
-              "wrapLogMessage": false
-            }
-          },
-          "version": "13.0.1"
-        }
-      }
-    },
-    "panel-11": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "fflpm2pifc2rka"
-                    },
-                    "group": "loki",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "direction": "backward",
-                      "editorMode": "code",
-                      "expr": "{container=~\".*frontend.*\"}",
-                      "queryType": "range"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 11,
-        "links": [],
-        "title": "Frontend logs",
-        "vizConfig": {
-          "group": "logs",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {},
-              "overrides": []
-            },
-            "options": {
-              "dedupStrategy": "none",
-              "enableInfiniteScrolling": false,
-              "enableLogDetails": true,
-              "prettifyLogMessage": true,
-              "showControls": false,
-              "showFieldSelector": false,
-              "showLevel": true,
-              "showTime": false,
-              "sortOrder": "Descending",
-              "timestampResolution": "ms",
-              "unwrappedColumns": false,
-              "wrapLogMessage": false
             }
           },
           "version": "13.0.1"
@@ -265,7 +161,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "rate(container_cpu_usage_seconds_total{\n  container_label_com_docker_compose_service=\"frontend\"\n}[1m]) * 100",
+                      "expr": "container_memory_working_set_bytes{\n  container_label_com_docker_compose_service=\"$service\"\n} / 1024 / 1024",
                       "legendFormat": "__auto",
                       "range": true
                     },
@@ -282,7 +178,7 @@
         "description": "",
         "id": 2,
         "links": [],
-        "title": "CPU %",
+        "title": "Memory",
         "vizConfig": {
           "group": "timeseries",
           "kind": "VizConfig",
@@ -377,15 +273,15 @@
                   "hidden": false,
                   "query": {
                     "datasource": {
-                      "name": "eflbin2s1kd1cf"
+                      "name": "fflpm2pifc2rka"
                     },
-                    "group": "prometheus",
+                    "group": "loki",
                     "kind": "DataQuery",
                     "spec": {
+                      "direction": "backward",
                       "editorMode": "code",
-                      "expr": "container_memory_working_set_bytes{\n  container_label_com_docker_compose_service=\"frontend\"\n} / 1024 / 1024",
-                      "legendFormat": "__auto",
-                      "range": true
+                      "expr": "{service=\"$service\"}",
+                      "queryType": "range"
                     },
                     "version": "v0"
                   },
@@ -400,49 +296,79 @@
         "description": "",
         "id": 3,
         "links": [],
-        "title": "Memory (MB)",
+        "title": "logs",
         "vizConfig": {
-          "group": "timeseries",
+          "group": "logs",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {},
+              "overrides": []
+            },
+            "options": {
+              "dedupStrategy": "none",
+              "enableInfiniteScrolling": false,
+              "enableLogDetails": true,
+              "prettifyLogMessage": true,
+              "showControls": false,
+              "showFieldSelector": false,
+              "showLevel": true,
+              "showTime": false,
+              "sortOrder": "Descending",
+              "timestampResolution": "ms",
+              "unwrappedColumns": false,
+              "wrapLogMessage": false
+            }
+          },
+          "version": "13.0.1"
+        }
+      }
+    },
+    "panel-4": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "eflbin2s1kd1cf"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "probe_success{instance=\"http://host.docker.internal:3000\"}",
+                      "legendFormat": "__auto",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 4,
+        "links": [],
+        "title": "Frontend Status",
+        "vizConfig": {
+          "group": "gauge",
           "kind": "VizConfig",
           "spec": {
             "fieldConfig": {
               "defaults": {
                 "color": {
                   "mode": "palette-classic"
-                },
-                "custom": {
-                  "axisBorderShow": false,
-                  "axisCenteredZero": false,
-                  "axisColorMode": "text",
-                  "axisLabel": "",
-                  "axisPlacement": "auto",
-                  "barAlignment": 0,
-                  "barWidthFactor": 0.6,
-                  "drawStyle": "line",
-                  "fillOpacity": 0,
-                  "gradientMode": "none",
-                  "hideFrom": {
-                    "legend": false,
-                    "tooltip": false,
-                    "viz": false
-                  },
-                  "insertNulls": false,
-                  "lineInterpolation": "linear",
-                  "lineWidth": 1,
-                  "pointSize": 5,
-                  "scaleDistribution": {
-                    "type": "linear"
-                  },
-                  "showPoints": "auto",
-                  "showValues": false,
-                  "spanNulls": false,
-                  "stacking": {
-                    "group": "A",
-                    "mode": "none"
-                  },
-                  "thresholdsStyle": {
-                    "mode": "off"
-                  }
                 },
                 "thresholds": {
                   "mode": "absolute",
@@ -461,28 +387,39 @@
               "overrides": []
             },
             "options": {
-              "annotations": {
-                "clustering": -1,
-                "multiLane": false
+              "barShape": "flat",
+              "barWidthFactor": 0.3,
+              "effects": {
+                "barGlow": false,
+                "centerGlow": false,
+                "gradient": true
               },
-              "legend": {
-                "calcs": [],
-                "displayMode": "list",
-                "placement": "bottom",
-                "showLegend": true
+              "endpointMarker": "point",
+              "minVizHeight": 75,
+              "minVizWidth": 75,
+              "orientation": "auto",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
               },
-              "tooltip": {
-                "hideZeros": false,
-                "mode": "single",
-                "sort": "none"
-              }
+              "segmentCount": 1,
+              "segmentSpacing": 0.3,
+              "shape": "gauge",
+              "showThresholdLabels": false,
+              "showThresholdMarkers": false,
+              "sizing": "auto",
+              "sparkline": true,
+              "textMode": "auto"
             }
           },
           "version": "13.0.1"
         }
       }
     },
-    "panel-4": {
+    "panel-5": {
       "kind": "Panel",
       "spec": {
         "data": {
@@ -516,102 +453,17 @@
           }
         },
         "description": "",
-        "id": 4,
-        "links": [],
-        "title": "Status ",
-        "vizConfig": {
-          "group": "__unconfigured-panel",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {},
-              "overrides": []
-            },
-            "options": {}
-          },
-          "version": "13.0.1"
-        }
-      }
-    },
-    "panel-5": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "eflbin2s1kd1cf"
-                    },
-                    "group": "prometheus",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorMode": "code",
-                      "expr": "rate(container_cpu_usage_seconds_total{\n  container_label_com_docker_compose_service=\"backend\"\n}[1m]) * 100",
-                      "legendFormat": "__auto",
-                      "range": true
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
         "id": 5,
         "links": [],
-        "title": "CPU %",
+        "title": "BAckend Status",
         "vizConfig": {
-          "group": "timeseries",
+          "group": "gauge",
           "kind": "VizConfig",
           "spec": {
             "fieldConfig": {
               "defaults": {
                 "color": {
-                  "mode": "palette-classic"
-                },
-                "custom": {
-                  "axisBorderShow": false,
-                  "axisCenteredZero": false,
-                  "axisColorMode": "text",
-                  "axisLabel": "",
-                  "axisPlacement": "auto",
-                  "barAlignment": 0,
-                  "barWidthFactor": 0.6,
-                  "drawStyle": "line",
-                  "fillOpacity": 0,
-                  "gradientMode": "none",
-                  "hideFrom": {
-                    "legend": false,
-                    "tooltip": false,
-                    "viz": false
-                  },
-                  "insertNulls": false,
-                  "lineInterpolation": "linear",
-                  "lineWidth": 1,
-                  "pointSize": 5,
-                  "scaleDistribution": {
-                    "type": "linear"
-                  },
-                  "showPoints": "auto",
-                  "showValues": false,
-                  "spanNulls": false,
-                  "stacking": {
-                    "group": "A",
-                    "mode": "none"
-                  },
-                  "thresholdsStyle": {
-                    "mode": "off"
-                  }
+                  "mode": "thresholds"
                 },
                 "thresholds": {
                   "mode": "absolute",
@@ -630,439 +482,32 @@
               "overrides": []
             },
             "options": {
-              "annotations": {
-                "clustering": -1,
-                "multiLane": false
+              "barShape": "flat",
+              "barWidthFactor": 0.5,
+              "effects": {
+                "barGlow": false,
+                "centerGlow": false,
+                "gradient": true
               },
-              "legend": {
-                "calcs": [],
-                "displayMode": "list",
-                "placement": "bottom",
-                "showLegend": true
+              "endpointMarker": "point",
+              "minVizHeight": 75,
+              "minVizWidth": 75,
+              "orientation": "auto",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
               },
-              "tooltip": {
-                "hideZeros": false,
-                "mode": "single",
-                "sort": "none"
-              }
-            }
-          },
-          "version": "13.0.1"
-        }
-      }
-    },
-    "panel-6": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "eflbin2s1kd1cf"
-                    },
-                    "group": "prometheus",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorMode": "code",
-                      "expr": "container_memory_working_set_bytes{\n  container_label_com_docker_compose_service=\"backend\"\n} / 1024 / 1024",
-                      "legendFormat": "__auto",
-                      "range": true
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 6,
-        "links": [],
-        "title": "Memory (MB)",
-        "vizConfig": {
-          "group": "timeseries",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "mode": "palette-classic"
-                },
-                "custom": {
-                  "axisBorderShow": false,
-                  "axisCenteredZero": false,
-                  "axisColorMode": "text",
-                  "axisLabel": "",
-                  "axisPlacement": "auto",
-                  "barAlignment": 0,
-                  "barWidthFactor": 0.6,
-                  "drawStyle": "line",
-                  "fillOpacity": 0,
-                  "gradientMode": "none",
-                  "hideFrom": {
-                    "legend": false,
-                    "tooltip": false,
-                    "viz": false
-                  },
-                  "insertNulls": false,
-                  "lineInterpolation": "linear",
-                  "lineWidth": 1,
-                  "pointSize": 5,
-                  "scaleDistribution": {
-                    "type": "linear"
-                  },
-                  "showPoints": "auto",
-                  "showValues": false,
-                  "spanNulls": false,
-                  "stacking": {
-                    "group": "A",
-                    "mode": "none"
-                  },
-                  "thresholdsStyle": {
-                    "mode": "off"
-                  }
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    },
-                    {
-                      "color": "red",
-                      "value": 80
-                    }
-                  ]
-                }
-              },
-              "overrides": []
-            },
-            "options": {
-              "annotations": {
-                "clustering": -1,
-                "multiLane": false
-              },
-              "legend": {
-                "calcs": [],
-                "displayMode": "list",
-                "placement": "bottom",
-                "showLegend": true
-              },
-              "tooltip": {
-                "hideZeros": false,
-                "mode": "single",
-                "sort": "none"
-              }
-            }
-          },
-          "version": "13.0.1"
-        }
-      }
-    },
-    "panel-7": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "eflbin2s1kd1cf"
-                    },
-                    "group": "prometheus",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorMode": "code",
-                      "expr": "rate(container_cpu_usage_seconds_total{\n  container_label_com_docker_compose_service=\"mongo\"\n}[1m]) * 100",
-                      "legendFormat": "__auto",
-                      "range": true
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 7,
-        "links": [],
-        "title": "CPU %",
-        "vizConfig": {
-          "group": "timeseries",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "mode": "palette-classic"
-                },
-                "custom": {
-                  "axisBorderShow": false,
-                  "axisCenteredZero": false,
-                  "axisColorMode": "text",
-                  "axisLabel": "",
-                  "axisPlacement": "auto",
-                  "barAlignment": 0,
-                  "barWidthFactor": 0.6,
-                  "drawStyle": "line",
-                  "fillOpacity": 0,
-                  "gradientMode": "none",
-                  "hideFrom": {
-                    "legend": false,
-                    "tooltip": false,
-                    "viz": false
-                  },
-                  "insertNulls": false,
-                  "lineInterpolation": "linear",
-                  "lineWidth": 1,
-                  "pointSize": 5,
-                  "scaleDistribution": {
-                    "type": "linear"
-                  },
-                  "showPoints": "auto",
-                  "showValues": false,
-                  "spanNulls": false,
-                  "stacking": {
-                    "group": "A",
-                    "mode": "none"
-                  },
-                  "thresholdsStyle": {
-                    "mode": "off"
-                  }
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    },
-                    {
-                      "color": "red",
-                      "value": 80
-                    }
-                  ]
-                }
-              },
-              "overrides": []
-            },
-            "options": {
-              "annotations": {
-                "clustering": -1,
-                "multiLane": false
-              },
-              "legend": {
-                "calcs": [],
-                "displayMode": "list",
-                "placement": "bottom",
-                "showLegend": true
-              },
-              "tooltip": {
-                "hideZeros": false,
-                "mode": "single",
-                "sort": "none"
-              }
-            }
-          },
-          "version": "13.0.1"
-        }
-      }
-    },
-    "panel-8": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "eflbin2s1kd1cf"
-                    },
-                    "group": "prometheus",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorMode": "code",
-                      "expr": "container_memory_working_set_bytes{\n  container_label_com_docker_compose_service=\"mongo\"\n} / 1024 / 1024",
-                      "legendFormat": "__auto",
-                      "range": true
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 8,
-        "links": [],
-        "title": "Memory (MB)",
-        "vizConfig": {
-          "group": "timeseries",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "mode": "palette-classic"
-                },
-                "custom": {
-                  "axisBorderShow": false,
-                  "axisCenteredZero": false,
-                  "axisColorMode": "text",
-                  "axisLabel": "",
-                  "axisPlacement": "auto",
-                  "barAlignment": 0,
-                  "barWidthFactor": 0.6,
-                  "drawStyle": "line",
-                  "fillOpacity": 0,
-                  "gradientMode": "none",
-                  "hideFrom": {
-                    "legend": false,
-                    "tooltip": false,
-                    "viz": false
-                  },
-                  "insertNulls": false,
-                  "lineInterpolation": "linear",
-                  "lineWidth": 1,
-                  "pointSize": 5,
-                  "scaleDistribution": {
-                    "type": "linear"
-                  },
-                  "showPoints": "auto",
-                  "showValues": false,
-                  "spanNulls": false,
-                  "stacking": {
-                    "group": "A",
-                    "mode": "none"
-                  },
-                  "thresholdsStyle": {
-                    "mode": "off"
-                  }
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": 0
-                    },
-                    {
-                      "color": "red",
-                      "value": 80
-                    }
-                  ]
-                }
-              },
-              "overrides": []
-            },
-            "options": {
-              "annotations": {
-                "clustering": -1,
-                "multiLane": false
-              },
-              "legend": {
-                "calcs": [],
-                "displayMode": "list",
-                "placement": "bottom",
-                "showLegend": true
-              },
-              "tooltip": {
-                "hideZeros": false,
-                "mode": "single",
-                "sort": "none"
-              }
-            }
-          },
-          "version": "13.0.1"
-        }
-      }
-    },
-    "panel-9": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "fflpm2pifc2rka"
-                    },
-                    "group": "loki",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "direction": "backward",
-                      "editorMode": "code",
-                      "expr": "{job=\"docker\"}",
-                      "queryType": "range"
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {},
-            "transformations": []
-          }
-        },
-        "description": "",
-        "id": 9,
-        "links": [],
-        "title": "All Logs ",
-        "vizConfig": {
-          "group": "logs",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {},
-              "overrides": []
-            },
-            "options": {
-              "dedupStrategy": "none",
-              "enableInfiniteScrolling": false,
-              "enableLogDetails": true,
-              "prettifyLogMessage": true,
-              "showControls": false,
-              "showFieldSelector": false,
-              "showLevel": true,
-              "showTime": false,
-              "sortOrder": "Descending",
-              "timestampResolution": "ms",
-              "unwrappedColumns": false,
-              "wrapLogMessage": false
+              "segmentCount": 1,
+              "segmentSpacing": 0.3,
+              "shape": "gauge",
+              "showThresholdLabels": false,
+              "showThresholdMarkers": true,
+              "sizing": "auto",
+              "sparkline": true,
+              "textMode": "auto"
             }
           },
           "version": "13.0.1"
@@ -1079,159 +524,52 @@
           "spec": {
             "collapse": false,
             "layout": {
-              "kind": "RowsLayout",
+              "kind": "GridLayout",
               "spec": {
-                "rows": [
+                "items": [
                   {
-                    "kind": "RowsLayoutRow",
+                    "kind": "GridLayoutItem",
                     "spec": {
-                      "collapse": false,
-                      "layout": {
-                        "kind": "GridLayout",
-                        "spec": {
-                          "items": [
-                            {
-                              "kind": "GridLayoutItem",
-                              "spec": {
-                                "element": {
-                                  "kind": "ElementReference",
-                                  "name": "panel-1"
-                                },
-                                "height": 7,
-                                "width": 8,
-                                "x": 0,
-                                "y": 0
-                              }
-                            },
-                            {
-                              "kind": "GridLayoutItem",
-                              "spec": {
-                                "element": {
-                                  "kind": "ElementReference",
-                                  "name": "panel-2"
-                                },
-                                "height": 7,
-                                "width": 8,
-                                "x": 8,
-                                "y": 0
-                              }
-                            },
-                            {
-                              "kind": "GridLayoutItem",
-                              "spec": {
-                                "element": {
-                                  "kind": "ElementReference",
-                                  "name": "panel-3"
-                                },
-                                "height": 7,
-                                "width": 8,
-                                "x": 16,
-                                "y": 0
-                              }
-                            }
-                          ]
-                        }
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-1"
                       },
-                      "title": "Frontend Service "
+                      "height": 8,
+                      "width": 12,
+                      "x": 0,
+                      "y": 0
                     }
                   },
                   {
-                    "kind": "RowsLayoutRow",
+                    "kind": "GridLayoutItem",
                     "spec": {
-                      "collapse": false,
-                      "layout": {
-                        "kind": "GridLayout",
-                        "spec": {
-                          "items": [
-                            {
-                              "kind": "GridLayoutItem",
-                              "spec": {
-                                "element": {
-                                  "kind": "ElementReference",
-                                  "name": "panel-4"
-                                },
-                                "height": 7,
-                                "width": 8,
-                                "x": 0,
-                                "y": 0
-                              }
-                            },
-                            {
-                              "kind": "GridLayoutItem",
-                              "spec": {
-                                "element": {
-                                  "kind": "ElementReference",
-                                  "name": "panel-5"
-                                },
-                                "height": 7,
-                                "width": 8,
-                                "x": 8,
-                                "y": 0
-                              }
-                            },
-                            {
-                              "kind": "GridLayoutItem",
-                              "spec": {
-                                "element": {
-                                  "kind": "ElementReference",
-                                  "name": "panel-6"
-                                },
-                                "height": 7,
-                                "width": 8,
-                                "x": 16,
-                                "y": 0
-                              }
-                            }
-                          ]
-                        }
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-2"
                       },
-                      "title": "Backend Service "
+                      "height": 8,
+                      "width": 12,
+                      "x": 12,
+                      "y": 0
                     }
                   },
                   {
-                    "kind": "RowsLayoutRow",
+                    "kind": "GridLayoutItem",
                     "spec": {
-                      "collapse": false,
-                      "layout": {
-                        "kind": "GridLayout",
-                        "spec": {
-                          "items": [
-                            {
-                              "kind": "GridLayoutItem",
-                              "spec": {
-                                "element": {
-                                  "kind": "ElementReference",
-                                  "name": "panel-7"
-                                },
-                                "height": 8,
-                                "width": 12,
-                                "x": 0,
-                                "y": 0
-                              }
-                            },
-                            {
-                              "kind": "GridLayoutItem",
-                              "spec": {
-                                "element": {
-                                  "kind": "ElementReference",
-                                  "name": "panel-8"
-                                },
-                                "height": 8,
-                                "width": 12,
-                                "x": 12,
-                                "y": 0
-                              }
-                            }
-                          ]
-                        }
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-3"
                       },
-                      "title": "Database Service "
+                      "height": 9,
+                      "width": 24,
+                      "x": 0,
+                      "y": 8
                     }
                   }
                 ]
               }
             },
-            "title": "Application Health "
+            "title": "Health"
           }
         },
         {
@@ -1247,10 +585,10 @@
                     "spec": {
                       "element": {
                         "kind": "ElementReference",
-                        "name": "panel-9"
+                        "name": "panel-4"
                       },
-                      "height": 10,
-                      "width": 8,
+                      "height": 7,
+                      "width": 12,
                       "x": 0,
                       "y": 0
                     }
@@ -1260,31 +598,18 @@
                     "spec": {
                       "element": {
                         "kind": "ElementReference",
-                        "name": "panel-10"
+                        "name": "panel-5"
                       },
-                      "height": 10,
-                      "width": 8,
-                      "x": 8,
-                      "y": 0
-                    }
-                  },
-                  {
-                    "kind": "GridLayoutItem",
-                    "spec": {
-                      "element": {
-                        "kind": "ElementReference",
-                        "name": "panel-11"
-                      },
-                      "height": 10,
-                      "width": 8,
-                      "x": 16,
+                      "height": 7,
+                      "width": 12,
+                      "x": 12,
                       "y": 0
                     }
                   }
                 ]
               }
             },
-            "title": "Logs "
+            "title": "Status"
           }
         }
       ]
@@ -1317,11 +642,51 @@
       "1d"
     ],
     "fiscalYearStartMonth": 0,
-    "from": "now-1h",
+    "from": "now-6h",
     "hideTimepicker": false,
     "timezone": "browser",
     "to": "now"
   },
-  "title": "Sample dash..",
-  "variables": []
+  "title": "New dashboard",
+  "variables": [
+    {
+      "kind": "QueryVariable",
+      "spec": {
+        "allowCustomValue": true,
+        "current": {
+          "text": [
+            "backend"
+          ],
+          "value": [
+            "backend"
+          ]
+        },
+        "definition": "label_values(container_cpu_usage_seconds_total,container_label_com_docker_compose_service)",
+        "hide": "dontHide",
+        "includeAll": true,
+        "label": "Service",
+        "multi": true,
+        "name": "service",
+        "options": [],
+        "query": {
+          "datasource": {
+            "name": "eflbin2s1kd1cf"
+          },
+          "group": "prometheus",
+          "kind": "DataQuery",
+          "spec": {
+            "qryType": 1,
+            "query": "label_values(container_cpu_usage_seconds_total,container_label_com_docker_compose_service)",
+            "refId": "PrometheusVariableQueryEditor-VariableQuery"
+          },
+          "version": "v0"
+        },
+        "refresh": "onDashboardLoad",
+        "regex": "",
+        "regexApplyTo": "value",
+        "skipUrlSync": false,
+        "sort": "disabled"
+      }
+    }
+  ]
 }
