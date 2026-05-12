@@ -22,7 +22,7 @@ A reusable observability stack for monitoring any Dockerized application.
 
 ```
 +--------------------------------------------------+
-|              YOUR CONTAINERS                     |
+|                 CONTAINERS                       |
 |        (Backend, Frontend, Database)             |
 +----------+----------+----------+----------------+
            |          |          |          |
@@ -71,7 +71,7 @@ monitoring-stack/
 ├── docker-compose.yml
 ├── prometheus.yml
 ├── promtail-config.yaml
-├── Grafana-dashboard.json
+├── Grafana-dashboard-Sample.json
 └── README.md
 ```
 
@@ -86,15 +86,8 @@ git clone https://github.com/dev-krishan-dhaka/monitoring-stack
 cd monitoring-stack
 ```
 
-### Step 2 — Create Shared Docker Network
 
-```bash
-docker network create monitoring
-```
-
-This network allows the monitoring stack and your application containers to communicate.
-
-### Step 3 — Start Monitoring Stack
+### Step 2 — Start Monitoring Stack
 
 ```bash
 docker compose up -d
@@ -108,7 +101,7 @@ docker ps
 
 You should see: `grafana`, `prometheus`, `loki`, `promtail`, `cadvisor`, `blackbox-exporter`, `node-exporter`
 
-### Step 4 — Open Grafana
+### Step 3 — Open Grafana
 
 Go to: [http://localhost:3001](http://localhost:3001)
 
@@ -117,7 +110,7 @@ Username: admin
 Password: admin
 ```
 
-### Step 5 — Add Data Sources
+### Step 4 — Add Data Sources
 
 **Prometheus**
 
@@ -133,10 +126,10 @@ Password: admin
 3. URL: `http://loki:3100`
 4. Click **Save & Test**
 
-### Step 6 — Import Dashboard
+### Step 5 — Import Dashboard
 
 1. Go to **Dashboards → Import**
-2. Upload `Grafana-dashboard.json`
+2. Upload `Grafana-dashboard-Sample.json`
 3. Select the **Prometheus** data source
 4. Click **Import**
 
@@ -144,280 +137,215 @@ Password: admin
 
 ## Monitor Any Dockerized Application
 
-### Step 1 — Connect App to Monitoring Network
 
-In your application's `docker-compose.yml`, add the `monitoring` network to each service:
-
-```yaml
-frontend:
-  build: .
-  ports:
-    - "3000:3000"
-  networks:
-    - monitoring
-```
-
-### Step 2 — Declare External Network
-
-At the bottom of your application's `docker-compose.yml`:
-
-```yaml
-networks:
-  frontend-network:
-  backend-network:
-  monitoring:
-    external: true
-```
-### step 3 - Create network 
-
-Add this at the end of compose file: 
-```bash
-networks:
-  monitoring:
-    name: monitoring
-```
-
-### Step 4 — Start Your Application
-
-If using a build:
+### Step 1 — Start the Application
 
 ```bash
 docker compose up --build -d
 ```
 
-If using a pre-built image:
+---
 
-```bash
-docker compose up -d
-```
+### Step 2 — Ensure Ports Are Exposed
 
-### Step 5 — Configure Blackbox Monitoring
-
-In `blackbox-targets.yml` --
+Your application's `docker-compose.yml` must expose ports to the **host machine**:
 
 ```yaml
-  - targets:
-      - 'http://frontend:3000'
-      - 'http://backend:5000/health'
+ports:
+  - "3000:3000"
 ```
 
-> **Important:** Use Docker service names, not `localhost`.
-> ✅ `http://frontend:3000`
-> ❌ `http://localhost:3000`
+---
 
-### Step 6 — Restart Prometheus
+### Step 3 — Configure Blackbox Targets
+
+Edit `blackbox-targets.yml` in the monitoring stack directory:
+
+```yaml
+- targets:
+    - http://host.docker.internal:3000
+```
+
+> ✅ **Always use** `host.docker.internal` with the exposed host port.
+>
+> ❌ **Do NOT use** internal Docker service names like `http://frontend:3000` — Blackbox Exporter cannot reach them across networks.
+
+---
+
+### Step 4 — Restart Prometheus
 
 ```bash
 docker compose restart prometheus
 ```
 
-# Example - 
+---
 
+### Step 5 — Verify Targets
 
+Open Prometheus in your browser:
 
+```
+http://localhost:9090/targets
+```
 
-## Step 1 — Clone and Configure the Application
+All configured targets should show status: **`UP`**
 
-### Clone the repository
+---
+
+## Example — React + Express + MongoDB App
+
+A complete walkthrough using the [Docker Awesome Compose](https://github.com/docker/awesome-compose/tree/master/react-express-mongodb) example.
+
+### Step 1 — Clone the Example App
 
 ```bash
 git clone https://github.com/docker/awesome-compose
 cd awesome-compose/react-express-mongodb
 ```
 
-### Update `compose.yaml`
-
-Edit the `compose.yaml` file to add all services to the `monitoring` network.
-
-**Frontend service:**
-
-```yaml
-networks:
-  - react-express
-  - monitoring
-```
-
-**Backend service:**
-
-```yaml
-networks:
-  - express-mongo
-  - react-express
-  - monitoring
-```
-
-**Database service:**
-
-```yaml
-networks:
-  - express-mongo
-  - monitoring
-```
-
-**At the bottom of `compose.yaml`, update the networks section:**
-
-```yaml
-networks:
-  monitoring:
-    name: monitoring
-```
-
-### Start the application
+### Step 2 — Start the Application
 
 ```bash
 docker compose up --build -d
 ```
 
----
+Frontend will be available at: `http://localhost:3000`
 
-## Step 3 — Clone and Configure the Monitoring Stack
+### Step 3 — Configure Blackbox Monitoring
 
-### Clone the monitoring stack
-
-```bash
-git clone https://github.com/dev-krishan-dhaka/monitoring-stack
-cd monitoring-stack
-```
-
-### Update `blackbox-target.yml`
+Navigate to your monitoring stack directory and edit `blackbox-targets.yml`:
 
 ```yaml
 - targets:
-    - 'http://frontend:3000'
-    - 'http://backend:5000/health'
+    - http://host.docker.internal:3000
 ```
 
-### Start the monitoring stack
+### Step 4 — Restart Prometheus
 
 ```bash
-docker compose up -d
+docker compose restart prometheus
 ```
 
----
+### Step 5 — Open Grafana
 
-## Step 4 — Set Up Grafana Dashboard
+```
+http://localhost:3001
+```
 
-1. Open Grafana in your browser (default: `http://localhost:3001`)
-2. Navigate to **Dashboards → Import**
-3. Upload or paste the contents of `Grafana-dashboard-sample.json`
-4. Click **Import** to load the dashboard
+| Field    | Value   |
+|----------|---------|
+| Username | `admin` |
+| Password | `admin` |
 
----
+### Step 6 — Import Dashboard
 
-## Verify Monitoring
-
-### Prometheus Targets
-
-Open [http://localhost:9090/targets](http://localhost:9090/targets) — all targets should show **UP**.
-
-### Useful Queries
-
-| What | Query |
-|------|-------|
-| Uptime check | `probe_success` |
-| Response time | `probe_duration_seconds` |
-| Container CPU | `rate(container_cpu_usage_seconds_total[1m]) * 100` |
-| Container Memory (MB) | `container_memory_working_set_bytes / 1024 / 1024` |
-
-### Loki Log Queries (Grafana → Explore → Loki)
-
-| What | Query |
-|------|-------|
-| All logs | `{job="docker"}` |
-| Frontend logs | `{container=~".*frontend.*"}` |
-| Backend logs | `{container=~".*backend.*"}` |
-| MongoDB logs | `{container=~".*mongo.*"}` |
-| Postgres logs | `{container=~".*postgres.*"}` |
+1. Go to **Dashboards → Import**
+2. Upload `Grafana-dashboard.json`
 
 ---
 
-## Grafana Dashboard Structure
+## Useful Prometheus Queries
 
-| Row | Panels |
-|-----|--------|
-| Frontend | Status · CPU · Memory |
-| Backend | Status · CPU · Memory |
-| Database | Status · CPU · Memory |
-| Logs | All · Frontend · Backend · Database |
+### Frontend HTTP Status
 
----
-
-## Prometheus Queries Reference
-
-**Frontend Status**
 ```promql
-probe_success{instance="http://frontend:3000"}
+probe_success{instance="http://host.docker.internal:3000"}
 ```
 
-**Backend Status**
+### Frontend CPU Usage (%)
+
 ```promql
-probe_success{instance="http://backend:5000/health"}
+rate(container_cpu_usage_seconds_total{
+  container_label_com_docker_compose_service="frontend"
+}[1m]) * 100
 ```
 
-**Frontend CPU**
+### Frontend Memory Usage (MB)
+
 ```promql
-rate(container_cpu_usage_seconds_total{name=~".*frontend.*"}[1m]) * 100
+container_memory_working_set_bytes{
+  container_label_com_docker_compose_service="frontend"
+} / 1024 / 1024
 ```
 
-**Backend CPU**
+### Backend CPU Usage (%)
+
 ```promql
-rate(container_cpu_usage_seconds_total{name=~".*backend.*"}[1m]) * 100
+rate(container_cpu_usage_seconds_total{
+  container_label_com_docker_compose_service="backend"
+}[1m]) * 100
 ```
 
-**Frontend Memory**
-```promql
-container_memory_working_set_bytes{name=~".*frontend.*"} / 1024 / 1024
-```
+### Backend Memory Usage (MB)
 
-**Backend Memory**
 ```promql
-container_memory_working_set_bytes{name=~".*backend.*"} / 1024 / 1024
+container_memory_working_set_bytes{
+  container_label_com_docker_compose_service="backend"
+} / 1024 / 1024
 ```
 
 ---
 
-## Troubleshooting
+## Useful Loki Log Queries
 
-**Port already allocated**
+### All Container Logs
 
-```bash
-docker compose down
-# or
-docker stop <container_name>
+```logql
+{job="docker"}
 ```
 
-**No logs in Loki**
+### Frontend Logs
 
-```bash
-docker compose restart promtail
-docker logs monitoring-stack-promtail-1
+```logql
+{container=~".*frontend.*"}
 ```
 
-**No metrics in Grafana**
+### Backend Logs
 
-Check [http://localhost:9090/targets](http://localhost:9090/targets) — all targets must be **UP**.
-
-**Blackbox status shows 0**
-
-```bash
-curl http://frontend:3000
-# or
-curl http://backend:5000/health
+```logql
+{container=~".*backend.*"}
 ```
 
----
+### MongoDB Logs
 
-## Stack Management
+```logql
+{container=~".*mongo.*"}
+```
 
-```bash
-# Stop stack
-docker compose down
+### Error Logs
 
-# Restart stack
-docker compose restart
+```logql
+{job="docker"} |= "error"
+```
+
+### Warning Logs
+
+```logql
+{job="docker"} |= "warn"
 ```
 
 ---
+
+## Recommended Dashboard Structure
+
+| Row       | Panels                          |
+|-----------|---------------------------------|
+| Frontend  | Status · CPU · Memory           |
+| Backend   | CPU · Memory · Logs             |
+| Database  | CPU · Memory                    |
+| Logs      | All Logs · Errors · Warnings    |
+
+---
+
+## 📁 File Reference
+
+| File                    | Purpose                                      |
+|-------------------------|----------------------------------------------|
+| `docker-compose.yml`    | Monitoring stack services definition         |
+| `blackbox-targets.yml`  | HTTP endpoints to probe                      |
+| `prometheus.yml`        | Prometheus scrape configuration              |
+| `Grafana-dashboard.json`| Pre-built Grafana dashboard to import        |
+
 
 ## License
 
