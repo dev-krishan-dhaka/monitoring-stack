@@ -132,7 +132,8 @@ Password: admin
 2. Upload `Grafana-dashboard-Sample.json`
 3. Select the **Prometheus** data source
 4. Click **Import**
-
+5. One time run the query on each panel
+   
 ---
 
 ## Monitor Any Dockerized Application
